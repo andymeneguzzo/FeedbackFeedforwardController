@@ -91,3 +91,37 @@ class System {
             return state;
         }
 };
+
+// IMPLEMENTATION TO HANDLE SIMULATION OF THE SYSTEM
+class Simulation {
+    private:
+        System system; // object system to run simulation on
+        InterfaceController* controller; // selected controller to use
+
+        double dt; // dt of derivation and integration
+        double totalTime; // time of simulation
+    
+    public:
+        Simulation(const System& system, InterfaceController* controller, double dt, double totalTime) 
+        : system(system), controller(controller), dt(dt), totalTime(totalTime) {}
+
+        // RUN SIMULATION FOR A CERTAIN SETPOINT FIXED CONSTANT
+        void run(double setpoint) {
+            int steps = static_cast<int>(totalTime/dt); // number of "samples" to take from simulation
+
+            for(int i=0; i<steps; ++i) {
+                double t = i*dt; // time at the current step
+                double measurement = system.getState(); // get the current state
+                double u = controller->compute(setpoint, measurement, dt); // for the certain controller used, we compute the u signal
+
+                system.update(u, dt); // update the system state after every computed u signal
+
+                // visualize the results for the step and go to the next step
+                std::cout << "t = " << t
+                          << " s, setpoint = " << setpoint
+                          << ", state = " << measurement
+                          << ", control signal u = " << u << std::endl;
+            }
+        }
+};
+
