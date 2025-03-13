@@ -1,1 +1,0 @@
-We define and implementa the Plant class to model the dynamics of the system
