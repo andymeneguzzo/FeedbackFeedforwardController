@@ -177,7 +177,7 @@ int main() {
     double setpoint = 1.0; // reference value that we expect
 
     // R U N   S I M U L A T I O N
-    Simulation simulation(system, &feedback, dt, totalTime);
+    Simulation simulation(system, &combined, dt, totalTime);
     simulation.run(setpoint);
 
     return 0;
