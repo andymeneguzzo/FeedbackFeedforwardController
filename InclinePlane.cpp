@@ -66,3 +66,32 @@ class CombinedController : public InterfaceController {
             return u_ff + u_fb;
         }
 };
+
+// DYNAMIC MODEL OF A CAR ON AN INCLINE PLANE
+// EQ OF MOTION -> Mx'' = -u - Mgsin(theta)
+class Car {
+    private:
+        double position;
+        double velocity;
+        double m;
+        double theta;
+    
+    public:
+    Car(double m, double theta, double initial_position = 0.0, double initial_velocity = 0.0)
+    : m(m), theta(theta), position(initial_position), velocity(initial_velocity) {}
+
+    void update(double u, double dt) {
+        double g = 9.81;
+
+        double acceleration = (-u - m*g*sin(theta))/m;
+        position += velocity*dt;
+        velocity += acceleration*dt;
+    }
+
+    double getPosition() const {
+        return position;
+    }
+    double getVelocity() const {
+        return velocity;
+    }
+};
