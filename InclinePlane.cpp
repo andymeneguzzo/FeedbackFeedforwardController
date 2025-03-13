@@ -95,3 +95,7 @@ class Car {
         return velocity;
     }
 };
+
+class Simulation {};
+
+int main() {}
