@@ -35,3 +35,17 @@ class FeedbackController : public InterfaceController {
             return Kp*error + Ki*integral + Kd*derivative;
         }
 };
+
+// FEEDFORWARD CONTROLLER
+class FeedforwardController : public InterfaceController {
+    private:
+        double m;
+        double g;
+        double theta;
+    public:
+        FeedforwardController(double m, double g, double theta) : m(m), g(g), theta(theta) {}
+
+        double compute(double /*setpoint*/, double /*measurement*/, double /*dt*/) {
+            return m*g*sin(theta);
+        }
+};
