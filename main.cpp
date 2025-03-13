@@ -53,5 +53,20 @@ class FeedforwardController : public InterfaceController {
 
 // IMPLEMENT A COMBINATION OF FEEDBACK AND FEEDFORWWARD CONTROLLER
 class CombinedController: public InterfaceController {
-    
-}
+    private:
+        // POINTERS TO THE TWO CONTROLLERS
+        InterfaceController* feedback;
+        InterfaceController* feedforward;
+    public:
+        CombinedController(InterfaceController* feedback, InterfaceController* forward)
+        : feedback(feedback), feedforward(forward) {}
+
+        // COMPUTE CONTROL SIGNAL
+        double compute(double setpoint, double measurement, double dt) override {
+            double u_ff = feedforward->compute(setpoint, measurement, dt);
+            double u_fb = feedback->compute(setpoint, measurement, dt);
+
+            // SUMMING THE TWO CONTROL SIGNALS
+            return u_ff + u_fb;
+        }
+};
