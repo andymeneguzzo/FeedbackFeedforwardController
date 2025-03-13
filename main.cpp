@@ -1,4 +1,7 @@
+
+
 #include <iostream>
+#include <fstream> // for file handling operations
 
 /**
  * 
@@ -98,7 +101,7 @@ class Simulation {
         System system; // object system to run simulation on
         InterfaceController* controller; // selected controller to use
 
-        double dt; // dt of derivation and integration
+        double dt; // sampling interval
         double totalTime; // time of simulation
     
     public:
@@ -107,6 +110,17 @@ class Simulation {
 
         // RUN SIMULATION FOR A CERTAIN SETPOINT FIXED CONSTANT
         void run(double setpoint) {
+            // CSV FILE HANDLING
+            std::ofstream file("simulation.csv");
+            if(!file) {
+                std::cerr << "Error opening file" << std::endl;
+                return;
+            }
+
+            file << "FEEDBACK CONTROLLER - simulation \n\n";
+            file << "TIME, SETPOINT, STATE, CONTROL SIGNAL \n";
+
+
             int steps = static_cast<int>(totalTime/dt); // number of "samples" to take from simulation
 
             for(int i=0; i<steps; ++i) {
@@ -121,7 +135,39 @@ class Simulation {
                           << " s, setpoint = " << setpoint
                           << ", state = " << measurement
                           << ", control signal u = " << u << std::endl;
+                
+                file << t << ", " << setpoint << ", " << measurement << ", " << u << "\n";
             }
+
+            file.close();
         }
 };
 
+// MAIN -> INITIALIZE CONTROLLERS, RUN SIMULATION
+int main() {
+    // SYSTEM PARAMETERS
+    double a = 1.0;
+    double b = 1.0;
+    System system(a, b, 0.0); // intitial state 0.0
+
+    // PARAMETERS FOR PID (FEEDBACK CONTROLLER)
+    double Kp = 2.0, Ki = 0.5, Kd = 0.1;
+    FeedbackController feedback(Kp, Ki, Kd);
+
+    // FEEDFORWARD CONTROLLER PARAMTERS ARE THE SYSTEM'S PARAMETERS
+    FeedforwardController feedforward(a, b);
+
+    // COMBINED CONTROLLER TAKES THEM BOTH, PASSED BY REFERENCE
+    CombinedController combined (&feedback, &feedforward);
+
+    // Simulation parameters
+    double dt = 0.01; // sampling interval
+    double totalTime = 10.0; // total time of simulation
+    double setpoint = 1.0; // reference value that we expect
+
+    // R U N   S I M U L A T I O N
+    Simulation simulation(system, &feedback, dt, totalTime);
+    simulation.run(setpoint);
+
+    return 0;
+}
