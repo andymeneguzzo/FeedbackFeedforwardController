@@ -49,3 +49,20 @@ class FeedforwardController : public InterfaceController {
             return m*g*sin(theta);
         }
 };
+
+// COMBINED CONTROLLER
+class CombinedController : public InterfaceController {
+    private:
+        InterfaceController* feedback;
+        InterfaceController* feedforward;
+    public:
+        CombinedController(InterfaceController* feedback, InterfaceController* feedforward)
+        : feedback(feedback), feedforward(feedforward) {}
+
+        double compute(double setpoint, double measurement, double dt) override {
+            double u_ff = feedforward->compute(setpoint, measurement, dt);
+            double u_fb = feedback->compute(setpoint, measurement, dt);
+            
+            return u_ff + u_fb;
+        }
+};
