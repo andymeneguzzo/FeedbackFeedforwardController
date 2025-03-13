@@ -1,5 +1,5 @@
 
-
+#include <iomanip> // formatting in file
 #include <iostream>
 #include <fstream> // for file handling operations
 
@@ -116,9 +116,17 @@ class Simulation {
                 std::cerr << "Error opening file" << std::endl;
                 return;
             }
+            
+            // column width
+            const int width = 15;
 
             file << "FEEDBACK CONTROLLER - simulation \n\n";
-            file << "TIME, SETPOINT, STATE, CONTROL SIGNAL \n";
+            
+            // Titles of the columns formatted to make nicer output
+            file << std::left << std::setw(width) << "Time" << ","
+                 << std::left << std::setw(width) << "Setpoint" << ","
+                 << std::left << std::setw(width) << "State" << ","
+                 << std::left << std::setw(width) << "ControlSignal" << "\n";
 
 
             int steps = static_cast<int>(totalTime/dt); // number of "samples" to take from simulation
@@ -136,9 +144,12 @@ class Simulation {
                           << ", state = " << measurement
                           << ", control signal u = " << u << std::endl;
                 
-                file << t << ", " << setpoint << ", " << measurement << ", " << u << "\n";
+                // file output, formatted to make nicer output
+                file << std::left << std::setw(width) << t << ","
+                          << std::left << std::setw(width) << setpoint << ","
+                          << std::left << std::setw(width) << measurement << ","
+                          << std::left << std::setw(width) << u << "\n";
             }
-
             file.close();
         }
 };
