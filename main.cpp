@@ -70,3 +70,24 @@ class CombinedController: public InterfaceController {
             return u_ff + u_fb;
         }
 };
+
+// IMPLEMENTATION OF THE SYSTEM TO CONTROL
+class System {
+    private:
+        double state;
+        double a, b;
+    public:
+        // INITIALIZE SYSTEM WITH PARAMETERS a,b AND an initial state
+        System(double a, double b, double intial_state = 0.0)
+        : a(a), b(b), state(intial_state) {}
+
+        // USE EULER'S METHOD TO INTEGRATE AND UPDATE THE SYSTEM STATE
+        void update(double u, double dt) {
+            double dx = -a*state + b*u;
+            state += dx*dt;
+        }
+
+        double getState() const {
+            return state;
+        }
+};
