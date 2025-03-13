@@ -35,3 +35,23 @@ class FeedbackController : public InterfaceController {
             return Kp*error + Ki*integral + Kd*derivative;
         }
 };
+
+// IMPLEMENT A FEEDFORWARD CONTROLLER
+class FeedforwardController : public InterfaceController {
+    private:
+        // ASSUME I° ORDER DYNAMICS -> dx/dt = -ax + bu
+        // FOR A STATIONARY STATE -> u_ff = (a/b) * setpoint
+        double a, b;
+    public:
+    FeedforwardController(double a, double b) : a(a), b(b) {}
+
+    // WE DON'T HAVE ANY PAST MEASUREMENT TO ACCOUNT FOR IN THIS CASE
+    double compute(double setpoint, double /*measurement*/, double /*dt*/) {
+        return (a/b)*setpoint;
+    }
+};
+
+// IMPLEMENT A COMBINATION OF FEEDBACK AND FEEDFORWWARD CONTROLLER
+class CombinedController: public InterfaceController {
+    
+}
